@@ -12,7 +12,10 @@ class Time(TableObject, TableObject.Base):
         t = Time()
         t.id = id
         s = str(id)
-        t.hour = int(s[0:len(s)-2])
+        if id<=59:
+            t.hour = 0
+        else:
+            t.hour = int(s[0:len(s)-2])
         t.minute = int(s[len(s)-2:len(s)])
         return t
 
@@ -36,7 +39,7 @@ class Time(TableObject, TableObject.Base):
         s = str(id)
         second = '00'
         hour = s[0:len(s)-2].zfill(2)
-        minute = s[len(s)-2:len(s)]
+        minute = s[len(s)-2:len(s)].zfill(2)
         return hour+':'+minute+':'+second
 
     @classmethod
