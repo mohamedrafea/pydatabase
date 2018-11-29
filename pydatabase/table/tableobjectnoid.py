@@ -14,7 +14,7 @@ from sqlalchemy.orm.query import Query
 
 from pydatabase.dbconnectionmanager import DBConnectionManager
 from pydatabase.table.sqloperator import SQLOperator
-
+import pandas as pd
 
 class TableObjectNoID(Common):
     #below are class variables
@@ -62,8 +62,8 @@ class TableObjectNoID(Common):
     @classmethod
     def setDatabase(cls,env):
         #cls.database = DBConnectionManager('poc_role','pocpass','poc')
-        print("in TableObject->setDatabase")
-        print(env)
+        #print("in TableObject->setDatabase")
+        #print(env)
         cls.database = DBConnectionManager(env)
     @declared_attr
     def __tablename__(cls):
@@ -140,7 +140,14 @@ class TableObjectNoID(Common):
         return o
 
     @classmethod
-    def findAll(cls,joinField = None,session=None):
+    def queryToDataframe(cls,query):
+        conn = cls.database.engine
+        statement = query.statement
+        sql = statement.compile(conn)
+        #print(sql)
+        return pd.read_sql(sql, con=conn)
+    @classmethod
+    def findAll(cls,joinField = None,session=None,returnDataframe=False):
         close = False
         if session is None:
             session = cls.database.Session()
@@ -148,7 +155,11 @@ class TableObjectNoID(Common):
         t = session.query(cls)
         if not (joinField is None):
             t = t.options(joinedload(joinField))
-        o = t.all()
+        o = None
+        if returnDataframe:
+            o = cls.queryToDataframe(t)
+        else:
+            o = t.all()
         if close:
             session.close()
         return o
@@ -173,7 +184,7 @@ class TableObjectNoID(Common):
         return o
        
     @classmethod
-    def findByFieldsValues(cls,fields,values,session=None,onlyOne=True,notNoneFields=None,orderByFields=None,ascending=True,operators=None,groupByFields=None,selectFieldsAndFunctions=None,nestedOperators=None):
+    def findByFieldsValues(cls,fields,values,session=None,onlyOne=True,notNoneFields=None,orderByFields=None,ascending=True,operators=None,groupByFields=None,selectFieldsAndFunctions=None,nestedOperators=None,returnDataframe=False,distinct=False):
         if operators is None:
             operators = [SQLOperator.equalOperator] * 1000
         close = False
@@ -207,13 +218,18 @@ class TableObjectNoID(Common):
         if onlyOne:
             o = o.first()
         else:
-            o = o.all()
+            if distinct:
+                o = o.distinct()
+            if returnDataframe:
+                o = cls.queryToDataframe(o)
+            else:
+                o = o.all()
         if close:
             session.close()
         return o
     @classmethod
-    def findByFieldValue(cls,field,value,session=None,onlyOne=True,orderByField=None,ascending=True,operators=None):
-        return (cls.findByFieldsValues([field],[value],session,onlyOne,None,orderByField,ascending,operators))
+    def findByFieldValue(cls,field,value,session=None,onlyOne=True,orderByField=None,ascending=True,operators=None,groupByFields=None,selectFieldsAndFunctions=None,nestedOperators=None,returnDataframe=False):
+        return (cls.findByFieldsValues([field],[value],session,onlyOne,None,orderByField,ascending,operators,groupByFields,selectFieldsAndFunctions,nestedOperators,returnDataframe))
 
     @classmethod
     def tl(cls, CSVFile,saveIndex=False):

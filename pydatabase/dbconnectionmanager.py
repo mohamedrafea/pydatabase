@@ -20,13 +20,13 @@ class DBConnectionManager(object):
             self.engine = sqlalchemy.create_engine(self.url)
         else:
             raise Exception('Invald database type:', self.databaseType)
-        print(self.engine)
+        #print(self.engine)
 
     def __init__(self, env):
         self.env = env
         self.databaseType = env.databaseType
         url = DBConnectionManager.databaseURL[self.databaseType]
         self.url = url.format(env.user, env.password, env.host, env.port, env.db)
-        print('url:', self.url)
+        #print('url:', self.url)
         self.setEngine()
         self.Session = sessionmaker(bind=self.engine)

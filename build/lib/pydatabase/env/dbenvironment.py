@@ -22,7 +22,7 @@ class DBEnvironment(Environment):
 		self.host = self.getProperty('db:' + self.getName(), 'host')
 		self.port = self.getProperty('db:' + self.getName(), 'port')
 		self.databaseType = self.getProperty('db:' + self.getName(), 'databaseType')
-		print('env initialized:',self)
+		#print('env initialized:',self)
 		"""
 		if env==Environment.ENV_LOCAL:
 			self.user=self.getProperty('db:'+self.getName(),)

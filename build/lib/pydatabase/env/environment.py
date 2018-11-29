@@ -32,7 +32,7 @@ class Environment(Common):
 
     @classmethod
     def getEnv(cls,env):
-        print("env=",env)
+        #print("env=",env)
         if env==cls.ENV_LOCAL:
             return cls.localEnv
         elif env==cls.ENV_TESTING:
