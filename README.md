@@ -5,7 +5,7 @@ dimensions used in dimensional modelling.
 
 ## Prerequisites
 
-- Python 3 and SQLAlchemy
+- Python 3, SQLAlchemy and pandas
 - MySQL or PostgreSQL
 
 ## Installing
