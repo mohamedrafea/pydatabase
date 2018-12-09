@@ -7,6 +7,7 @@ class SQLOperator(Common):
     GREATER_THAN_OR_EQUAL = '>='
     IN = 'in'
     OR = ''
+    NOT_EQUAL = '!='
     @classmethod
     def init(cls):
         cls.equalOperator = SQLOperator(cls.EQUAL)
@@ -15,6 +16,8 @@ class SQLOperator(Common):
         cls.greaterThanOperator = SQLOperator(cls.GREATER_THAN)
         cls.greaterThanOrEqualOperator = SQLOperator(cls.GREATER_THAN_OR_EQUAL)
         cls.inOperator = SQLOperator(cls.IN)
+        cls.notEqual = SQLOperator(cls.NOT_EQUAL)
+
     def __init__(self,op,field=None,value=None):
         self.operator = op
         self.field = field
@@ -32,6 +35,8 @@ class SQLOperator(Common):
             return (self.field>=self.value)
         if self.operator==SQLOperator.IN:
             return (self.field.in_(self.value))
+        if self.operator==SQLOperator.NOT_EQUAL:
+            return (self.field!=self.value)
         raise ValueError("Invalid operator")
     def filter(self,query):
         return query.filter(self.comparisonExpression())

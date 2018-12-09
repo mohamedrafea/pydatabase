@@ -184,7 +184,7 @@ class TableObjectNoID(Common):
         return o
        
     @classmethod
-    def findByFieldsValues(cls,fields,values,session=None,onlyOne=True,notNoneFields=None,orderByFields=None,ascending=True,operators=None,groupByFields=None,selectFieldsAndFunctions=None,nestedOperators=None,returnDataframe=False):
+    def findByFieldsValues(cls,fields,values,session=None,onlyOne=True,notNoneFields=None,orderByFields=None,ascending=True,operators=None,groupByFields=None,selectFieldsAndFunctions=None,nestedOperators=None,returnDataframe=False,distinct=False):
         if operators is None:
             operators = [SQLOperator.equalOperator] * 1000
         close = False
@@ -218,6 +218,8 @@ class TableObjectNoID(Common):
         if onlyOne:
             o = o.first()
         else:
+            if distinct:
+                o = o.distinct()
             if returnDataframe:
                 o = cls.queryToDataframe(o)
             else:
