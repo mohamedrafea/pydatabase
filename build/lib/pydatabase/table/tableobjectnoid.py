@@ -48,6 +48,16 @@ class TableObjectNoID(Common):
             o.delete(session)
         session.close()
 
+    def getID(self):
+        return None
+
+    @classmethod
+    def getListOfIDs(cls, objects):
+        l = []
+        for o in objects:
+            l.append(o.getID())
+        return l
+
     @classmethod
     def cleanAll(cls):
         session = cls.createSession()
@@ -184,7 +194,7 @@ class TableObjectNoID(Common):
         return o
        
     @classmethod
-    def findByFieldsValues(cls,fields,values,session=None,onlyOne=True,notNoneFields=None,orderByFields=None,ascending=True,operators=None,groupByFields=None,selectFieldsAndFunctions=None,nestedOperators=None,returnDataframe=False,distinct=False):
+    def findByFieldsValues(cls,fields,values,session=None,onlyOne=True,notNoneFields=None,orderByFields=None,ascending=True,operators=None,groupByFields=None,selectFieldsAndFunctions=None,nestedOperators=None,returnDataframe=False,distinct=False,printQuery=False):
         if operators is None:
             operators = [SQLOperator.equalOperator] * 1000
         close = False
@@ -215,6 +225,8 @@ class TableObjectNoID(Common):
                     o = o.order_by(f)
                 else:
                     o = o.order_by(f.desc())
+        if printQuery:
+            print(o)
         if onlyOne:
             o = o.first()
         else:
@@ -250,4 +262,27 @@ class TableObjectNoID(Common):
     @classmethod
     def savePandasDataframe(cls,df,saveIndex=False):
         df.to_sql(name=cls.__tablename__, con=cls.database.engine, index=saveIndex, if_exists='append')
-    
+
+    @classmethod
+    def createObject(cls):
+        return None
+
+    @classmethod
+    def extract(cls, targetEnv,fields=None,values=None,operators=None):
+        objects = None
+        if fields is None:
+            objects = cls.findAll()
+        else:
+            objects = cls.findByFieldsValues(fields=fields,values=values,operators=operators,onlyOne=False)
+        TableObjectNoID.setDatabase(targetEnv)
+        for o in objects:
+            p = cls.createObject()
+            p.copy(o,'id')
+            p.insert()
+
+    @classmethod
+    def copyAndInsertObjects(cls, objects):
+        for o in objects:
+            p = cls.createObject()
+            p.copy(o)
+            p.insert()

@@ -16,7 +16,9 @@ class Common(object):
             )
         )
         
-    def copy(self,orig):
+    def copy(self,orig,excludedFields={}):
         for k in sorted(orig.__dict__.keys()):
-            if k[0] != '_':
+            if k[0] != '_' and k not in excludedFields:
                 self.__dict__[k] = orig.__dict__[k]
+
+

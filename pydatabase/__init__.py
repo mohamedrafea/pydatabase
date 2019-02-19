@@ -7,3 +7,6 @@ def init(env):
 	TableObjectNoID.setDatabase(DBEnvironment.getEnv(env))
 	SQLOperator.init()
 
+def changeEnvironment(env):
+	TableObjectNoID.setDatabase(DBEnvironment.getEnv(env))
+

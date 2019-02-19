@@ -3,7 +3,8 @@ from sqlalchemy import Column, Integer, String, Boolean
 
 from pydatabase.dimension.month import Month
 from pydatabase.table.tableobjectnoid import TableObjectNoID
-
+from datetime import datetime
+from datetime import timedelta
 
 class Date(TableObjectNoID, TableObjectNoID.Base):
     id = Column(Integer,primary_key=True)
@@ -118,6 +119,17 @@ class Date(TableObjectNoID, TableObjectNoID.Base):
         s = timestamp[0:10]
         s2 = s.replace('-','')
         return int(s2)
+    @classmethod
+    def createDateFromSeconds(cls,sec):
+        dt = datetime(1970, 1, 1) + timedelta(seconds=sec)
+        d = Date()
+        d.year = dt.year
+        d.month = dt.month
+        d.day = dt.day
+        d.id = d.calcId()
+        d.updateDateString()
+        return d
+
     @classmethod
     def populateDimension(cls):
         start = '2010-01-01'

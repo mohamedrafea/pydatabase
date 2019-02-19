@@ -22,11 +22,6 @@ class TableObject(TableObjectNoID):
         if close:
             session.close()
 
-    @classmethod
-    def getListOfIDs(cls, objects):
-        l = []
-        for o in objects:
-            l.append(o.id)
-        return l
 
-    
+    def getID(self):
+        return self.id
