@@ -4,7 +4,7 @@ Created on Sun Oct 22 19:48:57 2017
 
 @author: mohamed
 """
-
+from pydatabase import list_util
 class Common(object):
     def __repr__(self):
         return "<{}({})>".format(
@@ -21,31 +21,42 @@ class Common(object):
             if k[0] != '_' and k not in excludedFields:
                 self.__dict__[k] = orig.__dict__[k]
     @classmethod
-    def toCSV(self,objects,fileName):
+    def toCSV(self,objects,fileName,separator=','):
         out = open(fileName, 'w')
-        out.write(objects[0].rowHeader())
+        out.write(objects[0].rowHeader(separator))
         for o in objects:
-            out.write(o.rowValues())
+            out.write(o.rowValues(separator))
         out.close()
-    def rowHeader(self):
+    def rowHeader(self,separator=','):
         h = ''
         for k in sorted(self.__dict__.keys()):
             if k[0] != '_':
                 if len(h)==0:
                     h = k
                 else:
-                    h = h + ','+k
+                    h = h + separator+k
         return h+'\n'
 
-    def rowValues(self):
-        r = ''
+    def rowValues(self,separator=','):
+        r = None
         for k in sorted(self.__dict__.keys()):
-            v = str(self.__dict__[k])
             if k[0] != '_':
-                if len(r)==0:
+                v = ''
+                rv = self.__dict__[k]
+                if rv is not None:
+                    if type(rv) is list:
+                        v = list_util.convertListToPostGresList(rv)
+                    else:
+                        v = str(rv)
+                if k=='areas':
+                    print(v)
+                    print(type(rv))
+                    #print(k)
+                    #print(type(self.__dict__[k]))
+                if r is None:
                     r = v
                 else:
-                    r = r + ','+v
+                    r = r + separator+v
         return r+'\n'
 
 

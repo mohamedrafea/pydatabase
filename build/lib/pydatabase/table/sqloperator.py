@@ -45,6 +45,6 @@ class SQLOperator(Common):
             return (self.field!=self.value)
         if self.operator==SQLOperator.ARRAY_CONTAINS:
             return (self.field.any(self.value))
-        raise ValueError("Invalid operator")
+        raise ValueError("Invalid operator: "+str(self.operator))
     def filter(self,query):
         return query.filter(self.comparisonExpression())

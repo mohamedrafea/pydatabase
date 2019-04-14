@@ -71,17 +71,33 @@ class Month(TableObject,TableObject.Base):
 		pm.id = pm.calcId()
 		return pm
 
+	@classmethod
+	def fillDF(cls,df, fromMonth, toMonth, month_field, values):
+		currentMonth = fromMonth
+		while currentMonth.monthDiff(toMonth) <= 0:
+			temp = df[df[month_field] == currentMonth.id]
+			if temp.empty:
+				valuesToInsert = [currentMonth.id]
+				valuesToInsert.extend(values)
+				df.loc[-1] = valuesToInsert
+				df.index = df.index + 1
+			currentMonth = currentMonth.getNextMonth()
+		df.sort_values(month_field, inplace=True)
+		return df
+
 	def getNextMonth(self):
+		return self.getFutureMonth(1)
+
+	def getFutureMonth(self,increment):
 		nm = Month()
-		if self.month_number==12:
-			nm.year = self.year+1
-			nm.month_number = 1
+		if self.month_number+increment > 12:
+			nm.year = self.year + 1
+			nm.month_number = self.month_number+increment-12
 		else:
 			nm.year = self.year
-			nm.month_number = self.month_number+1
+			nm.month_number = self.month_number + increment
 		nm.id = nm.calcId()
 		return nm
-
 	#return +ve if month is earlier month
 	def monthDiff(self,month):
 		yearDiff = self.year - month.year

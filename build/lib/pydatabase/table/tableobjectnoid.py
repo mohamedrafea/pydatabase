@@ -103,8 +103,11 @@ class TableObjectNoID(Common):
         if session is None:
             session = TableObjectNoID.database.Session()
             close = True
-        session.add(self)       
-        session.commit()
+        try:
+            session.add(self)
+            session.commit()
+        except:
+            pass
         if close:
             session.close()
 
