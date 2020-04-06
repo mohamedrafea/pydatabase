@@ -5,7 +5,8 @@ Created on Tue Oct 10 12:38:19 2017
 @author: mohamed
 """
 import sqlalchemy
-from pydatabase.common import Common
+#from pydatabase.common import Common
+from pycommonutil.common import Common
 from sqlalchemy import inspect
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.declarative import declared_attr

@@ -1,4 +1,5 @@
-from pydatabase.common import Common
+#from pydatabase.common import Common
+from pycommonutil.common import Common
 class SQLOperator(Common):
     EQUAL = '=='
     LESS_THAN = '<'

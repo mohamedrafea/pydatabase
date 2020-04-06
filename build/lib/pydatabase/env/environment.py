@@ -4,7 +4,8 @@ Created on Thu Nov  2 09:21:34 2017
 
 @author: mohamed
 """
-from pydatabase.common import Common
+#from pydatabase.common import Common
+from pycommonutil.common import Common
 import configparser
 class Environment(Common):
     ENV_LOCAL = 1

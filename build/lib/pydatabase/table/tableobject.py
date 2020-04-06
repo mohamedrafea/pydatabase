@@ -13,6 +13,7 @@ class TableObject(TableObjectNoID):
     id = Column(Integer, primary_key=True)
 
     def insert(self, session=None):
+        close = False
         if session is None:
             session = TableObjectNoID.database.Session()
             close = True
